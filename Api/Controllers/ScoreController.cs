@@ -27,15 +27,16 @@ namespace Api.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("calculate")]
-        [ProducesResponseType(typeof(int), 200)]
+        [ProducesResponseType(typeof(NewsScoreResponse), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> CalculateNewScore(MeasurementsRequest request)
         {
             try
             {
-                return Ok(await _calculationService.CalculateNewsScore(
-                    _mapper.Map<List<Measurement>>(request.Measurements)));
+                var score = await _calculationService.CalculateNewsScore(
+                    _mapper.Map<List<Measurement>>(request.Measurements));
+                return Ok(new NewsScoreResponse(score));
             }
             catch (ArgumentException e)
             {
@@ -43,7 +44,7 @@ namespace Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, $"An internal server error occurred : {e.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An internal server error occurred : {e.Message}");
             }
         }
     }
