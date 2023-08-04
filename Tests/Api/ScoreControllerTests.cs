@@ -38,8 +38,9 @@ public class ScoreControllerTests
         Assert.IsInstanceOf<OkObjectResult>(result);
 
         var okResult = (OkObjectResult)result;
+        var newsScoreResponse = (NewsScoreResponse)okResult.Value!;
         Assert.AreEqual(StatusCodes.Status200OK, okResult.StatusCode);
-        Assert.AreEqual(expectedScore, okResult.Value);
+        Assert.AreEqual(expectedScore, newsScoreResponse.Score);
 
         _calculationServiceMock.Verify(service => service.CalculateNewsScore(It.IsAny<List<Measurement>>()), Times.Once());
     }
